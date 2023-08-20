@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import javax.servlet.http.PushBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Repository
@@ -12,7 +13,7 @@ public class MovieRepository {
     HashMap<String, Movie> movierepo;
     HashMap<String, Director> directorrepo;
     //Directorname and List of movies
-    HashMap<String, List<String>> direcmoviespair = new HashMap<String, List<String>>();
+    HashMap<String, List<String>> direcmoviespair;
 
     public MovieRepository() {
         this.movierepo = new HashMap<>();
@@ -59,11 +60,43 @@ public class MovieRepository {
     }
 
     public void deletedirector(String directorname){
-        direcmoviespair.remove(directorname);
+        List<String> movies = new ArrayList<>();
+        if (direcmoviespair.containsKey(directorname)){
+            movies = direcmoviespair.get(directorname);
+
+            for (String movie : movies){
+                if (movierepo.containsKey(movie)){
+                    movierepo.remove(movie);
+                }
+            }
+        }
+        if (direcmoviespair.containsKey(directorname)) {
+            direcmoviespair.remove(directorname);
+        }
     }
     public void deletealldirectors(){
-        direcmoviespair.clear();
-    }
+        HashSet<String> moviesSet = new HashSet<String>();
 
+        //Deleting the director's map
+        directorrepo = new HashMap<>();
+
+        //Finding out all the movies by all the directors combined
+        for(String director: direcmoviespair.keySet()){
+
+            //Iterating in the list of movies by a director.
+            for(String movie: direcmoviespair.get(director)){
+                moviesSet.add(movie);
+            }
+        }
+
+        //Deleting the movie from the movieDb.
+        for(String movie: moviesSet){
+            if(movierepo.containsKey(movie)){
+                movierepo.remove(movie);
+            }
+        }
+        //clearing the pair.
+        direcmoviespair = new HashMap<>();
+    }
 
 }
