@@ -10,23 +10,24 @@ import java.util.List;
 @RestController
 @RequestMapping("movies")
 public class MovieController {
-    @Autowired MovieService movieService;
+    @Autowired
+    MovieService movieService;
     @PostMapping("/add-movie")
     public ResponseEntity<String> addMovie(@RequestBody Movie movie){
         movieService.addMovie(movie);
-        return new ResponseEntity<>("New Movies Added Successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("New movie added successfully", HttpStatus.CREATED);
     }
 
     @PostMapping("/add-director")
     public ResponseEntity<String> addDirector(@RequestBody Director director){
         movieService.addDirector(director);
-        return new ResponseEntity<>("New Director Added Successfully",HttpStatus.CREATED);
+        return new ResponseEntity<>("New director added successfully",HttpStatus.CREATED);
     }
 
     @PutMapping("/add-movie-director-pair")
     public ResponseEntity<String> addMovieDirectorPair(@RequestParam("moviename") String moviename,@RequestParam("directorname") String directorname){
         movieService.adddirectormoviepair(moviename,directorname);
-        return new ResponseEntity<>("Movie and Director are paired successfully",HttpStatus.CREATED);
+        return new ResponseEntity<>("New movie-director pair added successfully",HttpStatus.CREATED);
     }
     @GetMapping("/get-movie-by-name/{name}")
     public ResponseEntity<Movie> getMovieByName(@PathVariable String name){
@@ -50,11 +51,13 @@ public class MovieController {
         return new ResponseEntity<>(movieslist,HttpStatus.CREATED);
     }
     @DeleteMapping("/delete-director-by-name")
-    public ResponseEntity<String> deleteDirectorByName(String directorname){
+    public ResponseEntity<String> deleteDirectorByName(@RequestParam String directorname){
+        movieService.deletemoviesbyname(directorname);
         return new ResponseEntity<>("Director record deleted successfully",HttpStatus.CREATED);
     }
     @DeleteMapping("/delete-all-directors")
     public ResponseEntity<String> deleteAllDirectors(){
+        movieService.deletealldirectormovies();
         return new ResponseEntity<>("All Directors and its movies are deleted successfully",HttpStatus.CREATED);
     }
 }
